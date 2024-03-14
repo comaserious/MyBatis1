@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="MenuMapper">
+    <!--필기. 조회한 컬럼과 MenuDto 를 매핑시키기위한 설정-->
+    <resultMap id="menuResultMap" type="com.ohgiraffers.section01.xmlconfig.MenuDto">
+        <id property="code" column="MENU_CODE"/>
+        <result property="name" column="MENU_NAME"/>
+        <result property="price" column="menu_price"/>
+        <result property="categoryCode" column="category_code"/>
+        <result property="orderableStatus" column="orderable_status"/>
+    </resultMap>
+    <select id="selectAllMenu" resultMap="menuResultMap">
+        select * from tbl_menu
+        where orderable_status = 'Y'
+        order by menu_code
+    </select>
+    <!--필기. 파라미터가 한개인 경우 바인딩 되는 이름은 상관없으며, 파리미터 타입을 지정하지 않아도 된다
+             여러개 인경우는 반드시 행해야 하며 이름 또한 상관있다-->
+    <select id="selectMenuByCode" resultMap="menuResultMap" parameterType = "_int">
+        select * from tbl_menu
+        where menu_code = #{ code }
+        and orderable_status = 'Y';
+    </select>
+    <!--필기. insert, update, delete 의 경우 int 형으로 기본적으로 수행결과를 반환한다
+             파리미터로 전달된 menu 를 DTO의 필드명으로 값을 바인딩해야한다-->
+    <insert id="insertMenu" parameterType="com.ohgiraffers.section01.xmlconfig.MenuDto">
+        insert into tbl_menu(menu_name,menu_price,category_code,orderable_status)
+        values(#{name} , #{price} , #{categoryCode},'Y')
+    </insert>
+    <update id="updateMenu" parameterType="com.ohgiraffers.section01.xmlconfig.MenuDto">
+        update tbl_menu
+        set menu_name = #{name},
+            menu_price = #{price},
+            category_code = #{categoryCode},
+            orderable_status = #{orderableStatus}
+        where menu_code = #{code}
+    </update>
+    <delete id="deleteMenu" parameterType="_int">
+        delete from tbl_menu
+        where menu_code = #{code};
+    </delete>
+</mapper>

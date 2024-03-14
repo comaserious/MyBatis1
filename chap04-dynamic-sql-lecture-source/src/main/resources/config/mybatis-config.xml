@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <properties resource="config/connection-info.properties"/>
+    <typeAliases>
+        <typeAlias type="com.ohgiraffers.common.MenuDto" alias="MenuDto"/>
+        <typeAlias type="com.ohgiraffers.common.SearchCriteria" alias="criteria"/>
+    </typeAliases>
+    <environments default="dev">
+        <environment id="dev">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <!--여전히 정보가 유출이 되어있다 이를 숨겨 보자
+                     properties 파일을 생성후 properties 를 연결
+                     그후 키값을 ${ 키 } 로 반환 받을수 있다 -->
+                <property name="driver" value="${driver}"/>
+                <property name="url" value="${url}"/>
+                <property name="username" value="${username}"/>
+                <property name="password" value="${password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+    <mappers>
+        <package name="com.ohgiraffers.section01.xml"/>
+    </mappers>
+</configuration>

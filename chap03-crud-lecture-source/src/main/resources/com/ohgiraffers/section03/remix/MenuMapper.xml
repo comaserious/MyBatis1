@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--필기.
+        mapper는
+        1. dao 인터페이스와 동일한 패키지에 위치해야한다
+        2. dao 인터페이스의 풀네임을 namespace로 지정해야한다
+        3. mapper 인터페이스와 xml 의 이름이 동일해야한다(파일 구조도 똑같아야 풀네임이 같아지는 것이다)
+        4. 작성한 메소드의 이름과 id 가 일치하고, 리턴 타입이 일치하는
+           쿼리문을 모두 작성해야한다-->
+<mapper namespace="com.ohgiraffers.section03.remix.MenuMapper">
+    <resultMap id="menuResultMap" type="com.ohgiraffers.section03.remix.MenuDto">
+        <id property="code" column="menu_code"/>
+        <result property="name" column="menu_name"/>
+        <result property="price" column="menu_price"/>
+        <result property="categoryCode" column="category_code"/>
+        <result property="orderableStatus" column="orderable_status"/>
+    </resultMap>
+    <select id="selectAllMenu" resultMap="menuResultMap">
+        select * from tbl_menu
+        where orderable_status = 'Y'
+        order by menu_code
+    </select>
+    <select id="selectMenuByCode" resultMap="menuResultMap" parameterType="_int" >
+        select * from tbl_menu
+        where menu_code = #{code}
+        and orderable_status ='Y'
+    </select>
+    <insert id="registMenu" parameterType="com.ohgiraffers.section03.remix.MenuDto">
+        insert into tbl_menu(menu_name,menu_price,category_code,orderable_status)
+        values(#{name},#{price},#{categoryCode},'Y')
+    </insert>
+    <update id="updateMenu" parameterType="com.ohgiraffers.section03.remix.MenuDto">
+        update tbl_menu
+        set menu_name = #{name},
+            menu_price = #{price},
+            category_code = #{categoryCode}
+        where menu_code = #{code}
+    </update>
+    <delete id="deleteMenu" parameterType="_int">
+        delete from tbl_menu
+        where menu_code = #{code}
+    </delete>
+</mapper>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <environments default="dev">
+        <environment id="dev">
+            <!--필기. JDBC 와 Managed 중 하나 선택-->
+            <transactionManager type="JDBC"/>
+            <!--필기. pooled 와 unpooled 중 하나선택-->
+            <dataSource type="POOLED">
+                <!--필기. 반드시 property name은 driver, url, username, password 이여야지만 인식이 가능하다 -->
+                <property name="driver" value="com.mysql.cj.jdbc.Driver"/>
+                <property name="url" value="jdbc:mysql://localhost/menudb"/>
+                <property name="username" value="ohgiraffers"/>
+                <property name="password" value="ohgiraffers"/>
+            </dataSource>
+        </environment>
+    </environments>
+    <!--필기. 컴퓨터는 말을 잘 듣기 때문에 항상 등록을 해주자
+         mappers 안에 mapper resource 를 통해 configuration 에 addMapper 를 해준것과 동일한 일을 한다-->
+    <mappers>
+        <mapper resource="mapper.xml"/>
+    </mappers>
+</configuration>
