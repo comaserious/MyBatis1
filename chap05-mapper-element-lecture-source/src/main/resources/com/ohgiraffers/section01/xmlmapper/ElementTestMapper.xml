@@ -59,7 +59,9 @@
         1. id : pk 컬럼을 매핑하기 위한 태그이다 (성능 향상)
         2. result : pk 가 아닌 일반 칼럼을 맵핑하기 위한 태그
         3. constructor : 인스턴스화 되는 클래스의 생성자에 결과를 삽입하기 위해 사용 (여지껏 필드에 세터처럼 맵핑을 했다면 매개변수 있는 생성자에대가
-                            직접 넣는 느낌으로 이해하면 편하다)-->
+                            직접 넣는 느낌으로 이해하면 편하다)
+        4. association : 복잡한 타입의 연관관계로 1:1 포함한 관계인 경우 사용한다
+        5. collection : 복잡한 타입의 연관관계로 1:다 포함관계인 경우 사용한다-->
 <!--필기. <constructor>
             <idArg> , <arg> 하위 엘리먼트들이 있다
             id, result 엘리먼트는 setter 를 이용하기 때문에 property를 지정하지만
@@ -86,5 +88,101 @@
         where
             orderable_status = 'Y'
     </select>
+<!--필기. association -->
+<!--필기. resultMap을 구성하는 방법 1. 따로 만든 resultMap 을 이용하는 방법-->
+
+<!--     <resultMap id="categoryResultMap" type="com.ohgiraffers.common.CategoryDTO">-->
+<!--         <id property="code" column="category_code"/>-->
+<!--         <result property="name" column="category_name"/>-->
+<!--         <result property="refCategoryCode" column="ref_category_code"/>-->
+<!--     </resultMap>-->
+<!--     <resultMap id="menuAndCategoryResultMap" type="com.ohgiraffers.common.MenuAndCategoryDTO">-->
+<!--         <id property="code" column="menu_code"/>-->
+<!--         <result property="name" column="menu_name"/>-->
+<!--         <result property="price" column="menu_price"/>-->
+<!--         <result property="orderableStatus" column="orderable_status"/>-->
+<!--        <association property="category" ResultMap="categoryResultMap"/>-->
+<!--     </resultMap>-->
+    <resultMap id="menuAndCategoryResultMap" type="com.ohgiraffers.common.MenuAndCategoryDTO">
+        <id property="code" column="menu_code"/>
+        <result property="name" column="menu_name"/>
+        <result property="price" column="menu_price"/>
+        <result property="orderableStatus" column="orderable_status"/>
+        <association property="category" javaType="com.ohgiraffers.common.CategoryDTO">
+            <id property="code" column="category_code"/>
+            <result property="name" column="category_name"/>
+            <result property="refCategoryCode" column="ref_category_code"/>
+        </association>
+    </resultMap>
+    <select id="selectResultMapAssociationTest" resultMap="menuAndCategoryResultMap">
+        select
+            a.menu_code,
+            a.menu_name,
+            a.menu_price,
+            b.category_code,
+            a.orderable_status,
+            b.category_name,
+            b.ref_category_code
+        from
+            tbl_menu a
+        join
+            tbl_category b
+        on
+            a.category_code = b.category_code
+        where
+            orderable_status= 'Y'
+
+    </select>
+    <resultMap id="categoryAndMenuResultMap" type="com.ohgiraffers.common.CategoryAndMenuDTO">
+        <id property="code" column="category_code"/>
+        <result property="name" column="category_name"/>
+        <result property="refCategoryCode" column="ref_category_code"/>
+        <collection property="menuList" ofType="com.ohgiraffers.common.MenuDto">
+            <id property="code" column="menu_code"/>
+            <result property="name" column="menu_name"/>
+            <result property="price"   column="menu_price"/>
+            <result property="categoryCode" column="category_code"/>
+            <result property="orderableStatus" column="orderable_status"/>
+        </collection>
+    </resultMap>
+    <select id="selectResultMapCollectionTest" resultMap="categoryAndMenuResultMap">
+        select
+            a.category_code,
+            a.category_name,
+            a.ref_category_code,
+            b.menu_code,
+            b.menu_name,
+            b.menu_price,
+            b.category_code,
+            b.orderable_status
+        from
+            tbl_category a
+        left join
+            tbl_menu b
+        on
+            a.category_code = b.category_code
+        order by
+            a.category_code
+    </select>
+<!--필기. <slq> 엘리먼트 각 매핑 구문에서 공통으로 사용할 수있는 sql 문자열의 일부를 정의하고 재사용하기 위해 사용-->
+    <sql id="columns">
+        menu_code,
+        menu_name,
+        menu_price,
+        category_code,
+        orderable_status
+    </sql>
+    <select id="selectSqlTest" resultMap="menuResultMap3">
+        select
+            <include refid="columns"/>
+        from
+            tbl_menu
+    </select>
+<!--필기. 자주 사용하는 속성
+        1. parameterType : 파라미터의 타입을 의미. 이미 정의된 타입(hashmap,_int 등)
+                           개발자가 정의한 타입을 사용하는 경우 full-name 을 기술해야한다
+        2. resultType : 매핑구문의 결과 행을 반환할 타입이다. 전체 결과의 타입을 지정하는 것이 아닌
+                        하나의 행(row)에 해당하는 타입을 설정해야한다
+        3. resultMap : 매핑구문의 결과 행을 미리 선언한 resultMap 을 이용한다는 의미-->
 
 </mapper>

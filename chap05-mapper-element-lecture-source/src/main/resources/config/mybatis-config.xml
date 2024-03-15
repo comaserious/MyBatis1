@@ -24,4 +24,5 @@
     <mappers>
         <package name="com.ohgiraffers.section01.xmlmapper"/>
     </mappers>
+
 </configuration>

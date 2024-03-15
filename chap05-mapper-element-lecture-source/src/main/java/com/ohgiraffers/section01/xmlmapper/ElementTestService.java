@@ -1,8 +1,11 @@
 package com.ohgiraffers.section01.xmlmapper;
 
+import com.ohgiraffers.common.CategoryAndMenuDTO;
+import com.ohgiraffers.common.MenuAndCategoryDTO;
 import com.ohgiraffers.common.MenuDto;
 import org.apache.ibatis.session.SqlSession;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -40,6 +43,8 @@ public class ElementTestService {
             System.out.println("==================<resultMap> 서브메뉴===============");
             System.out.println("1. <resultMap> 테스트");
             System.out.println("2. <constructor> 테스트");
+            System.out.println("3. <association> 테스트");
+            System.out.println("4. <collection> 테스트");
             System.out.print("메뉴 번호를 선택하세요 : ");
             int no = scr.nextInt();
             switch (no) {
@@ -49,8 +54,41 @@ public class ElementTestService {
                 case 2:
                     elementTestService.selectResultMapConstructorTest();
                     break;
+                case 3:
+                    elementTestService.selectResultMapAssociationTest();
+                    break;
+                case 4:
+                    elementTestService.selectResultMapCollectionTest();
+                    break;
             }
         }while (true);
+
+    }
+
+    private void selectResultMapCollectionTest() {
+        SqlSession session =getSqlSession();
+        mapper = session.getMapper(ElementTestMapper.class);
+
+        List<CategoryAndMenuDTO> categoryList = mapper.selectResultMapCollectionTest();
+
+        for(CategoryAndMenuDTO category : categoryList){
+            System.out.println(category);
+        }
+    }
+
+    private void selectResultMapAssociationTest() {
+        SqlSession session =getSqlSession();
+        mapper = session.getMapper(ElementTestMapper.class);
+
+        List<MenuAndCategoryDTO> menuList = mapper.selectResultMapAssociationTest();
+
+        for(MenuAndCategoryDTO menu : menuList){
+            System.out.println(menu);
+        }
+
+        session.close();
+
+
 
     }
 
@@ -79,5 +117,16 @@ public class ElementTestService {
         }
         session.close();
 
+    }
+
+    public void selectSqlTest() {
+
+        SqlSession session = getSqlSession();
+        mapper = session.getMapper(ElementTestMapper.class);
+        List<MenuDto> menuList = mapper.selectSqlTest();
+        for(MenuDto menu : menuList){
+            System.out.println(menu);
+        }
+        session.close();
     }
 }

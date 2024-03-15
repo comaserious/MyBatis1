@@ -95,6 +95,7 @@
                 and category_code in (3)
             </otherwise>
         </choose>
+
         order by menu_code
 
     </select>

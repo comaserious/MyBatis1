@@ -24,7 +24,9 @@ public class Application {
                 case 2 :
                     elementTestService.resultMapSubMenu();
                     break;
-                case 3 : break;
+                case 3 :
+                    elementTestService.selectSqlTest();
+                    break;
                 case 4 : break;
 
             }
